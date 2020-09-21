@@ -36,6 +36,8 @@ export async function getFollowCount() {
 
 export async function updateBD(user_id, follows) {
 
+    follows = await getFollows()
+    
     let followsToSend = ''
     
     follows.forEach(follow => {
@@ -44,6 +46,6 @@ export async function updateBD(user_id, follows) {
 
     const servAddrs = "https://1d842aeb719b.ngrok.io" 
     let api = servAddrs + "/update_follows/" + user_id + "/" + followsToSend
-    console.log(api)
+    fetch(api)
 
 }

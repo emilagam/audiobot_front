@@ -34,7 +34,7 @@ class MyProfile extends Component {
 				'access_token': this.props.authToken
 			}
 		})
-		
+
 		this.setState({ 
 			user: result.response[0], 
 			isLoaded: true, 

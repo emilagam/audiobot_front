@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import { Cell, Group, ScreenSpinner, Avatar, PanelHeader, Placeholder, PanelHeaderBack, List, Header, Button, Div} from '@vkontakte/vkui'
-import Error from '../Error'
+import Error from './Error'
 import '@vkontakte/vkui/dist/vkui.css';
 import Icon28ChevronRightOutline from '@vkontakte/icons/dist/28/chevron_right_outline'
-import {getFollows} from '../../modules/follow'
+import {getFollows} from '../modules/follow'
 import bridge from '@vkontakte/vk-bridge'
 
 class Follows extends Component {

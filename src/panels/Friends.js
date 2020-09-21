@@ -5,6 +5,8 @@ import '@vkontakte/vkui/dist/vkui.css'
 import Error from './Error'
 import bridge from '@vkontakte/vk-bridge'
 
+const OFFSET_COUNT = 20
+
 class Friends extends Component {
 	constructor (props) {
 		super(props);
@@ -22,25 +24,34 @@ class Friends extends Component {
 
 	async componentDidMount () {
 
-		await this.getItems()
+		await this.getItems(0)
 
 	}
 
-	async getItems () {
+	async getItems (offset) {
 
 		let result = await bridge.send("VKWebAppCallAPIMethod", {
 			method: "friends.get",
 			params: {
 				'fields': "photo_100",
+				"offset": offset,
+				"count": OFFSET_COUNT,
 				'v': '5.110',
 				'access_token': this.props.authToken
 			}
 		})
 
-		this.setState({ 
-			friends : result.response.items, 
+		if (result.response.items.length === 0) {
+			return
+		}
+
+		await this.setState({ 
+			friends : [...this.state.friends, ...result.response.items], 
 			isLoaded: true
 		})
+
+		setTimeout(500)
+		this.getItems(offset + OFFSET_COUNT)
 
 	}
 

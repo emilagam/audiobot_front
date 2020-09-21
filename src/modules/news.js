@@ -51,10 +51,7 @@ export async function updateNews(userId, token, startTime) {
     let text = "";
     let attachment = "";
     let keyboard = ""
-    
-    if (newsfeed.response.items.length > 0) {
-        await sendMessage(userId, "#новыепесни:", "", "")
-    }
+    let messagesToSend = []
 
     newsfeed.response.items.forEach(post => {
         
@@ -121,8 +118,20 @@ export async function updateNews(userId, token, startTime) {
         if (attachment === '') {
             return
         }
+        
+        let newMessage = {
+            userId, text, attachment, keyboard
+        }
+        messagesToSend = [...messagesToSend, newMessage]
+        
+    })
+    
+    if (messagesToSend.length > 0) {
+        await sendMessage(userId, "#новыепесни:", "", "")
+    }
 
-        sendMessage(userId, text, attachment, keyboard);
+    messagesToSend.map((msg) => {
+        sendMessage(msg.userId, msg.text, msg.attachment, msg.keyboard);
     })
 
     let now  = Date.now() / 1000

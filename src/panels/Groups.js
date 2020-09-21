@@ -5,6 +5,8 @@ import '@vkontakte/vkui/dist/vkui.css'
 import Error from './Error'
 import bridge from '@vkontakte/vk-bridge'
 
+const OFFSET_COUNT = 20
+
 class Groups extends Component {
 	constructor (props) {
 		super(props);
@@ -22,26 +24,36 @@ class Groups extends Component {
 
 	async componentDidMount () {
 
-		this.getItems()
+		this.getItems(0)
 
 	}
 
-	async getItems () {
+	async getItems (offset) {
 		
 		let result = await bridge.send("VKWebAppCallAPIMethod", {
 			method: "groups.get",
 			params: {
 				"extended": 1,
+				"offset": offset,
+				"count": OFFSET_COUNT,
 				'fields': "photo_100",
 				'v': '5.110',
 				'access_token': this.props.authToken
 			}
 		})
 		
-		this.setState({ 
-			groups : result.response.items, 
+		if (result.response.items.length === 0) {
+			return
+		}	
+		
+		await this.setState({ 
+			groups : [...this.state.groups, ...result.response.items], 
 			isLoaded: true
 		})
+
+		setTimeout(500)
+		this.getItems(offset + OFFSET_COUNT)
+
 	}
 
 	openGroup = (id) => {
