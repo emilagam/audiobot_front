@@ -28,7 +28,7 @@ export async function updateNews(userId, token, startTime) {
         {
             "method": "newsfeed.get", "request_id": 1,
             "params": {
-                "start_time": startTime, 
+                "start_time": 1601122192,//startTime, 
                 "filters": "audio,audio_playlist",
                 "return_banned": "1",
                 "count": "100",
@@ -53,6 +53,7 @@ export async function updateNews(userId, token, startTime) {
     let keyboard = ""
     let messagesToSend = []
 
+    console.log(newsfeed.response.items)
     newsfeed.response.items.forEach(post => {
         
         // Пользователь/группа которому принадлежит запись
@@ -64,6 +65,7 @@ export async function updateNews(userId, token, startTime) {
         text = user.text
         attachment = ""
 
+        console.log(post)
         if (post.type === "post") {
             
             if (post.copy_history) {
@@ -114,6 +116,8 @@ export async function updateNews(userId, token, startTime) {
                 inline: false	
             }
         }
+       
+        console.log(attachment)
         
         if (attachment === '') {
             return
@@ -125,6 +129,8 @@ export async function updateNews(userId, token, startTime) {
         messagesToSend = [...messagesToSend, newMessage]
         
     })
+ 
+    console.log(messagesToSend)
     
     if (messagesToSend.length > 0) {
         await sendMessage(userId, "#новыепесни:", "", "")
@@ -137,7 +143,7 @@ export async function updateNews(userId, token, startTime) {
     let now  = Date.now() / 1000
     setStorage("startTime", now)
 
-    return (newsfeed.response.items.length > 0)     
+    return (messagesToSend.length > 0)     
 }
 
 export async function sendMessage(userId, text, attachment, keyboard) {
